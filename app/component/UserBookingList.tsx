@@ -16,12 +16,11 @@ const UserBookingList = ({ booking}: { booking: bookingDetails }) => {
           body: JSON.stringify({ _id: booking._id }),
         })
         if (response.ok) {
-          revalidateBooking("/dashboard")
+          revalidateBooking("/dashboard");
         }
         else {
             console.log("Something went wrong");
-        }
-        setShowAlert(false)
+        } 
     };
   return (
     <div key={booking._id} className="bg-green-200 mt-8 py-8 px-12 ">

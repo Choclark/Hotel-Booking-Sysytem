@@ -8,7 +8,7 @@ export async function GET() {
     if(res.isNetworkError){
         return NextResponse.json({message:"Connection problem try later"},{status:400})
     }
-    return NextResponse.json({res},{status:200})
+    return NextResponse.json({data:res},{status:200})
 }
 export  async function POST(request:Request) {
     const {newBooking}:{newBooking:bookingDetails} = await request.json();

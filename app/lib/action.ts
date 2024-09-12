@@ -5,5 +5,7 @@ import { redirect } from "next/navigation"
 
 export const  revalidateBooking = (url:string) => {
     revalidateTag('bookings')
-    revalidatePath(`/`)
+    revalidatePath("/dashbaord")
+    revalidatePath("/rooms")
+    redirect(url)
 } 
