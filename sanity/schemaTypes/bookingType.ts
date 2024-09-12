@@ -11,7 +11,7 @@ export default defineType({
     defineField({
       name: 'id',
       title: 'ID',
-      type: 'number', // Assuming ID is a string; adjust if it's a number or another type
+      type: 'string', // Assuming ID is a string; adjust if it's a number or another type
     }),
     defineField({
       name: 'priceAnight',

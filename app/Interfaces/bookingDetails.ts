@@ -14,7 +14,7 @@ export interface bookingDetails{
     priceAnight: number;
     checkOutDate: string;
     checkInDate: string;
-    id: number;
+    id: string;
     _createdAt: string;
     name: string;
     email: string;

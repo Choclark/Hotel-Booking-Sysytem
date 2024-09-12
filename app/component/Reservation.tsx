@@ -4,7 +4,8 @@ import { RoomDetails } from "@/app/Interfaces/RoomDetails";
 import { ReserveDateDetail } from "@/app/Interfaces/ReserveDateDetails";
 import { bookingDetails } from "../Interfaces/bookingDetails";
 import { LoginLink } from "@kinde-oss/kinde-auth-nextjs/components";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
+import { revalidateBooking } from "../lib/action";
 
 const Reservation = ({
   reservation,
@@ -38,7 +39,10 @@ const Reservation = ({
     type: null,
     message: "",
   });
+  const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
+  
   useEffect(() => {
     const today = new Date();
     today.setDate(today.getDate() + 1); // Add 1 day to today's date
@@ -58,7 +62,7 @@ const Reservation = ({
     return () => clearTimeout(timer);
   }, [alertMessage.message]);
   const handleSubmit = async () => {
-    const router = useRouter();
+    
     setSubmiting(true);
     if (resDate.checkInDate === "" || resDate.checkOutDate === "") {
       setAlertMessage({
@@ -136,7 +140,7 @@ const Reservation = ({
       email: user.email,
       roomType: room.type,
       roomConfort: room.confort,
-      id: Date.now(),
+      id: `BKG-${reservation.length<10 && "00" }${reservation.length<100 && reservation.length>10 && "0" }${reservation.length+1}`,
       priceAnight: room.pricePerNight,
       _id: "",
       _createdAt: "",
@@ -159,7 +163,7 @@ const Reservation = ({
         type: "success",
         message: `Success! Your room has been successfully booked from ${resDate.checkInDate} to ${resDate.checkOutDate} for a total of ${calculateDaysBetweenDates()} nights. We look forward to welcoming you! A confirmation email has been sent to ${user.email}. If you have any questions, feel free to contact us. Thank you for choosing us for your stay!`,
       });
-      router.reload();
+      revalidateBooking("/")
     } else {
       const data = await res.json();
       setAlertMessage({

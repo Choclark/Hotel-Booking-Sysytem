@@ -13,8 +13,11 @@ const getRoomData = async (id: string) => {
   return res[0];
 };
 const getBooking = async () =>{
-  const res = await client.fetch(`*[_type == "booking"]`);
-  return res
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/booking`
+  ,{next:{tags:['bookings']}})
+    const data = await res.json()
+  if(res.ok) return data
+  else return []
 }
 
 
@@ -29,7 +32,8 @@ const RoomDetailPage = async ({ params }: { params: { id: string } }) => {
     "double" = 4,
     "suite" = 6,
   }
-  const bookings:bookingDetails[] = await getBooking();
+  const bookingsDataFetch:{res:any}= await getBooking();
+  const bookings:bookingDetails[] = bookingsDataFetch.res
   return (
     <section className="min-h-[90vh] relative">
       <div className="container  mx-auto py-8 pl-8 ">

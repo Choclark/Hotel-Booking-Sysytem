@@ -1,8 +1,9 @@
 "use client"
 import React,{useState} from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { bookingDetails } from "../Interfaces/bookingDetails";
-const UserBookingList = ({ booking }: { booking: bookingDetails }) => {
+import { revalidateBooking } from "../lib/action";
+const UserBookingList = ({ booking}: { booking: bookingDetails }) => {
     
     const router = useRouter();
     const [showAlert, setShowAlert] = useState(false);
@@ -15,14 +16,11 @@ const UserBookingList = ({ booking }: { booking: bookingDetails }) => {
           body: JSON.stringify({ _id: booking._id }),
         })
         if (response.ok) {
-            router.reload();
+          revalidateBooking("/dashboard")
         }
         else {
             console.log("Something went wrong");
         }
-        
-        router.reload();
-        
         setShowAlert(false)
     };
   return (

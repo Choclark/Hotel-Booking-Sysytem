@@ -2,17 +2,22 @@ import { client } from "@/sanity/lib/client";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { bookingDetails } from "../Interfaces/bookingDetails";
 import UserBookingList from "../component/UserBookingList";
+import { revalidateTag } from "next/cache";
 const getUserBooking = async (email: string | null) => {
-  const res = await client.fetch(
-    `*[_type == "booking" && email == "${email}"]`
-  );
-  return res;
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/booking`
+  ,{next:{tags:['bookings']}})
+    const data = await res.json()
+  if(res.ok) return data
+  else return []
 };
+
+
 
 const page = async () => {
   const { getUser } = await getKindeServerSession();
   const user = await getUser();
-  const UserBookings: bookingDetails[] = await getUserBooking(user?.email);
+  const UserBookingsFetch:{res:any} = await getUserBooking(user?.email);
+  const UserBookings:bookingDetails[] = UserBookingsFetch.res
   console.log(UserBookings);
   return (
     <section className="min-h-[80vh]">
