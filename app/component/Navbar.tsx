@@ -22,17 +22,17 @@ const Navbar = () => {
                         Home
                     </li>
                 </Link>
-                <Link href={"/restaurant"}>
+                <Link href={"#"}>
                         <li className="hover:bg-slate-200 md:hover:bg-white md:hover:text-green-300 pl-3 rounded-md   py-2">
                             Restaurant
                         </li>
                 </Link>
-                <Link href={"/best-deal"}>
+                <Link href={"#"}>
                     <li className="hover:bg-slate-200 md:hover:bg-white md:hover:text-green-300 pl-3 rounded-md   py-2">
                         Best deals
                     </li>
                 </Link>
-                <Link href={"/faq"}>
+                <Link href={"#"}>
                     <li className="hover:bg-slate-200 md:hover:bg-white md:hover:text-green-300 pl-3 rounded-md   py-2">
                         FAQ
                     </li>
