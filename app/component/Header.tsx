@@ -16,7 +16,7 @@ const Header = async () => {
   const user  = await getUser()
   return (
     <header>
-      <div className=" mx-auto lg:px-8   border-none border-b-2 border-white shadow-sm md:w-max ">
+      <div className=" mx-auto lg:px-8 pt-3   border-none border-b-2 border-white shadow-sm md:w-max ">
         <div className="  lg:px-10 relative md:!w-max flex flex-col md:flex-row md:justify-between h-full md:gap-0 gap-3">
           <div className="flex items-center gap-2 justify-center   md:w-max">
             <Link href={"/"} className="flex items-end">
@@ -43,7 +43,7 @@ const Header = async () => {
             </div>
           </div>
           <div className="flex w-full justify-center md:w-fit flex-row-reverse md:flex-row gap-2 relative md:justify-between">
-          <Navbar/>
+          {/* <Navbar/> */}
           <div className=" relative  flex justify-center md:justify-end pb-2">
             {isUserAuthenticated ? (
               <AccountDropdown user={user} />

@@ -1,26 +1,39 @@
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
+import { sanityFetch } from "@/sanity/lib/client";
 import { bookingDetails } from "../Interfaces/bookingDetails";
 import UserBookingList from "../component/UserBookingList";
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const getUserBooking = async (email: string | null) => {
   try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASE_URL}/api/booking`,
-      { next:{tags:["bookings"]}}  
-    );
-
-    if (!res.ok) {
-      throw new Error(`Failed to fetch bookings: ${res.status}`);
-    }
-
-    const data:{data:any[]} = await res.json();
-    const newdata  = data.data.filter(booking => booking.email === email);
+    const res:bookingDetails[] = await sanityFetch({
+      query:`*[_type == "booking"]`,
+      tags:['booking'],
+    })
+    console.log("dashboard fetch")
+    const newdata  = res.filter(booking => booking.email === email);
     return newdata;
   } catch (error) {
     console.error("Error fetching user bookings:", error);
     return []; // Fallback to an empty array on error
   }
+};
+const handleDelete = async (_id: string) => {
+  "use server"
+  const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/booking`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ _id: _id }),
+  })
+  if (response.ok) {
+    revalidateTag('bookings')
+    revalidatePath("/dashboard")
+  }
+  else {
+      console.log("Something went wrong");
+  } 
 };
 
 const page = async () => {
@@ -38,7 +51,7 @@ const page = async () => {
   }
 
   const UserBookings: bookingDetails[] = await getUserBooking(user.email);
-
+  console.log("neww : ", UserBookings);
   return (
     <section className="min-h-[80vh]">
       <div className="container mx-auto py-8 h-full">
@@ -52,7 +65,7 @@ const page = async () => {
             </p>
           ) : (
             UserBookings.map((booking) => (
-              <UserBookingList key={booking._id} booking={booking} />
+              <UserBookingList key={booking._id} booking={booking} onDelete={handleDelete} />
             ))
           )}
         </div>

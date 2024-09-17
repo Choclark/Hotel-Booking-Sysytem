@@ -1,4 +1,4 @@
-import { client } from "@/sanity/lib/client";
+import { client, sanityFetch } from "@/sanity/lib/client";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
 import { TbArrowsMaximize, TbUser } from "react-icons/tb";
@@ -13,12 +13,13 @@ const getRoomData = async (id: string) => {
   return res[0];
 };
 const getBooking = async () =>{
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/booking`,{next:{tags:['bookings']}})
-  if(res.ok) {
-    const data = await res.json()
-    return data.data
-  }
-  else return []
+  const res:bookingDetails[] = await sanityFetch({
+    query:`*[_type == "booking"]`,
+    tags:['booking'],
+  })
+  console.log("fetch a oid")
+  return res
+  
 }
 
 
@@ -98,7 +99,7 @@ const RoomDetailPage = async ({ params }: { params: { id: string } }) => {
           </div>
 
           <div className="lg:w-[35%]">
-            <Reservation reservation={bookings} room={room} user={user} isUserAuthenticated={isUserAuthenticated}/>
+            <Reservation Reservation={bookings} room={room} user={user} isUserAuthenticated={isUserAuthenticated}/>
             </div>
         </div>
       </div>

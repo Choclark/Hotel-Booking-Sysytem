@@ -8,21 +8,33 @@ import { useRouter } from "next/navigation";
 import { revalidateBooking } from "../lib/action";
 
 const Reservation = ({
-  reservation,
+  Reservation,
   room,
   user,
   isUserAuthenticated,
 }: {
-  reservation: bookingDetails[];
+  Reservation: bookingDetails[];
   room: RoomDetails;
   user: any;
   isUserAuthenticated: boolean;
 }) => {
   
+  const [reservation,setReservation] = useState<bookingDetails[]>([])
   const [resDate, setResDate] = useState<ReserveDateDetail>({
     checkInDate: "",
     checkOutDate: "",
   });
+  
+  useEffect(()=>{
+    setReservation(Reservation)
+  },[Reservation])
+
+  useEffect(()=>{
+    console.log(reservation)
+  },[reservation])
+  
+  
+  
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -88,38 +100,8 @@ const Reservation = ({
       setSubmiting(false);
       return;
     }
-    // Function to check if a booking conflict exists
-    const isBookingConflict = () => {
-      return reservation.some((existingBooking) => {
-        if (existingBooking.choosenRoom === room.id) {
-          const existingCheckIn = new Date(
-            existingBooking.checkInDate
-          ).getTime();
-          const existingCheckOut = new Date(
-            existingBooking.checkOutDate
-          ).getTime();
-          const selectedCheckIn = new Date(resDate.checkInDate).getTime();
-          const selectedCheckOut = new Date(resDate.checkOutDate).getTime();
-
-          // Check if the selected dates overlap with existing booking dates
-          return (
-            selectedCheckIn < existingCheckOut &&
-            selectedCheckOut > existingCheckIn
-          );
-        }
-        return false;
-      });
-    };
-
-    // Check if there is a conflict before proceeding
-    if (isBookingConflict()) {
-      setAlertMessage({
-        type: "error",
-        message: "This room is already booked for the selected dates",
-      });
-      setSubmiting(false);
-      return;
-    }
+   
+    
     const calculateDaysBetweenDates = () => {
       const checkInDate = new Date(resDate.checkInDate);
       const checkOutDate = new Date(resDate.checkOutDate);
@@ -165,14 +147,15 @@ const Reservation = ({
         message: `Success! Your room has been successfully booked from ${resDate.checkInDate} to ${resDate.checkOutDate} for a total of ${calculateDaysBetweenDates()} nights. We look forward to welcoming you! A confirmation email has been sent to ${user.email}. If you have any questions, feel free to contact us. Thank you for choosing us for your stay!`,
       });
       revalidateBooking(`/rooms/${room.id}`);
+      setSubmiting(false);
     } else {
       const data = await res.json();
       setAlertMessage({
         type: "error",
         message: data.message,
       });
+      setSubmiting(false);
     }
-    setSubmiting(false);
   };
   return (
     <div className="h-[320px] mb-4 bg-green-100 mt-2">

@@ -13,7 +13,7 @@ const StarRating = ({ rate }: { rate: number }) => {
   return (
     <div className="flex gap-1 items-center">
       {/* Render full stars */}
-      {[...Array(fullStars)].map((_, i) => (
+      {[...Array(fullStars? fullStars : 0)].map((_, i) => (
         <Star key={i} filled={true} />
       ))}
       {/* Render half star if necessary */}

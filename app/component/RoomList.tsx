@@ -19,6 +19,7 @@ interface RoomDetails{
   confort: string;
 }
 const RoomList = ({rooms}:{rooms:RoomDetails[]}) => {
+  console.log(rooms)
   enum Capacity {
     "single" = 2,
     "double" = 4,
@@ -44,6 +45,7 @@ const RoomList = ({rooms}:{rooms:RoomDetails[]}) => {
     })
     setFilteredRooms(filterd)
   }, [CurrentTabValue, rooms])
+  console.log(filteredRooms)
   return (
     <section className="py-10 min-h-[90vh]">
       <div className="w-full flex flex-col items-center justify-center mb-8">
@@ -60,13 +62,13 @@ const RoomList = ({rooms}:{rooms:RoomDetails[]}) => {
       </div>
       <div className="grid grid-col-1  md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {
-        filteredRooms.map((room) => {
+      filteredRooms.length > 0 &&  filteredRooms.map((room:RoomDetails) => {
           return <div key={room.id}>
             <Link href={`/rooms/${room.id}`}>
               <div className="relative w-full h-[300px] overflow-hidden mb-6">
                 <Image
-                  src={urlFor(room.mainImage).url()}
-                  alt={room.mainImage.asset._ref}
+                  src={room.mainImage ? urlFor(room.mainImage).url() : ""}
+                  alt={room.mainImage ? room.mainImage.asset._ref : ""}
                   fill
                   priority
                   className="object-cover"
@@ -75,8 +77,8 @@ const RoomList = ({rooms}:{rooms:RoomDetails[]}) => {
             </Link>
             <div className="h-[136px]">
               <div className="flex items-center justify-between mb-3">
-                <div className="text-gray-700 text-[18px] font-bold">Capacity - {Capacity[room.type.toLowerCase() as keyof typeof Capacity]}</div>
-                <StarRating rate={Rate[room.confort.toLowerCase() as keyof typeof Rate]} />
+                <div className="text-gray-700 text-[18px] font-bold">Capacity - {Capacity[room.type?.toLowerCase() as keyof typeof Capacity]}</div>
+                <StarRating rate={Rate[room.confort?.toLowerCase() as keyof typeof Rate]} />
               </div>
               <Link href={`/rooms/${room.id}`}>
                 <h3 className="text-black font-semibold text-[30px] mb-1">{room.type}</h3>
